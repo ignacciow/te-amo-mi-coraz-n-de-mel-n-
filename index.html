@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Para Mar ❤️</title>
+    <!-- Fuente bonita y redondeada -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #ffd9e6; /* rosa suave tipo Miffy */
+            font-family: 'Quicksand', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+        }
+
+        .container {
+            max-width: 700px;
+            width: 100%;
+        }
+
+        .card {
+            background-color: #ffffff;
+            border-radius: 40px 40px 40px 40px;
+            box-shadow: 0 20px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            padding: 2rem;
+            text-align: center;
+            border: 5px solid #ffa5c3;
+            transition: all 0.3s ease;
+        }
+
+        /* ESTADO CERRADO */
+        .closed {
+            cursor: pointer;
+            padding: 3rem 1rem;
+            transition: transform 0.2s;
+        }
+        .closed:hover {
+            transform: scale(1.02);
+        }
+        .closed .envelope {
+            font-size: 6rem;
+            line-height: 1;
+            margin-bottom: 1rem;
+            filter: drop-shadow(0 10px 5px rgba(0,0,0,0.1));
+        }
+        .closed p {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #ff80a5;
+            margin: 0.5rem 0;
+        }
+        .closed small {
+            font-size: 1.2rem;
+            color: #b3b3b3;
+        }
+
+        /* ESTADO ABIERTO */
+        .opened {
+            display: block;
+        }
+        .hidden {
+            display: none !important;
+        }
+
+        /* Personajes CSS */
+        .characters {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .character {
+            width: 90px;
+            height: 90px;
+            position: relative;
+            background: transparent;
+        }
+
+        /* Miffy (coneja) */
+        .miffy {
+            background-color: white;
+            border-radius: 50%;
+            box-shadow: 0 4px 0 #f0f0f0;
+        }
+        .miffy::before, .miffy::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 45px;
+            background-color: white;
+            border-radius: 50% 50% 0 0;
+            top: -25px;
+            box-shadow: 0 4px 0 #f0f0f0;
+        }
+        .miffy::before {
+            left: 8px;
+            transform: rotate(-10deg);
+        }
+        .miffy::after {
+            right: 8px;
+            transform: rotate(10deg);
+        }
+        .miffy .eyes {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: #555;
+            border-radius: 50%;
+            top: 35px;
+            left: 20px;
+            box-shadow: 25px 0 0 #555;
+        }
+        .miffy .mouth {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            border-left: 2px solid #555;
+            border-bottom: 2px solid #555;
+            transform: rotate(-45deg);
+            top: 50px;
+            left: 38px;
+        }
+
+        /* Hello Kitty (gato con moño) */
+        .hello-kitty {
+            background-color: white;
+            border-radius: 50%;
+            box-shadow: 0 4px 0 #f0f0f0;
+        }
+        .hello-kitty::before, .hello-kitty::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-left: 15px solid transparent;
+            border-right: 15px solid transparent;
+            border-bottom: 25px solid white;
+            top: -18px;
+            filter: drop-shadow(0 4px 0 #f0f0f0);
+        }
+        .hello-kitty::before {
+            left: 2px;
+            transform: rotate(-20deg);
+        }
+        .hello-kitty::after {
+            right: 2px;
+            transform: rotate(20deg);
+        }
+        .hello-kitty .bow {
+            position: absolute;
+            width: 18px;
+            height: 14px;
+            background-color: #ff4d6d;
+            border-radius: 40% 40% 0 0;
+            top: -12px;
+            left: 35px;
+            transform: rotate(45deg);
+            box-shadow: -8px 8px 0 #ff4d6d, 0 0 0 2px #ffb3c6;
+            z-index: 2;
+        }
+        .hello-kitty .eyes {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background-color: #333;
+            border-radius: 50%;
+            top: 35px;
+            left: 20px;
+            box-shadow: 25px 0 0 #333;
+        }
+        .hello-kitty .nose {
+            position: absolute;
+            width: 8px;
+            height: 6px;
+            background-color: #ffaa00;
+            border-radius: 40%;
+            top: 45px;
+            left: 38px;
+        }
+        .hello-kitty .whiskers {
+            position: absolute;
+            width: 20px;
+            height: 2px;
+            background-color: #999;
+            top: 45px;
+            left: 10px;
+            transform: rotate(-10deg);
+            box-shadow: 40px 0 0 #999, 0 10px 0 #999, 40px 10px 0 #999;
+        }
+
+        /* Pusheen (gato gris) */
+        .pusheen {
+            background-color: #bcbcbc;
+            border-radius: 50%;
+            box-shadow: 0 4px 0 #9e9e9e;
+        }
+        .pusheen::before, .pusheen::after {
+            content: '';
+            position: absolute;
+            width: 18px;
+            height: 30px;
+            background-color: #bcbcbc;
+            border-radius: 50% 50% 0 0;
+            top: -15px;
+            box-shadow: 0 4px 0 #9e9e9e;
+        }
+        .pusheen::before {
+            left: 12px;
+            transform: rotate(-10deg);
+        }
+        .pusheen::after {
+            right: 12px;
+            transform: rotate(10deg);
+        }
+        .pusheen .eyes {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background-color: #333;
+            border-radius: 50%;
+            top: 35px;
+            left: 18px;
+            box-shadow: 22px 0 0 #333;
+        }
+        .pusheen .cheeks {
+            position: absolute;
+            width: 10px;
+            height: 6px;
+            background-color: #ffb6c1;
+            border-radius: 50%;
+            top: 48px;
+            left: 12px;
+            box-shadow: 35px 0 0 #ffb6c1;
+        }
+
+        /* Texto principal */
+        h2 {
+            font-size: 2.2rem;
+            color: #ff80a5;
+            margin: 1.5rem 0 1rem;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
+        /* Botones */
+        .buttons {
+            position: relative;
+            height: 70px;
+            margin: 2rem 0 1rem;
+        }
+
+        .btn {
+            font-family: 'Quicksand', sans-serif;
+            font-size: 2rem;
+            font-weight: 600;
+            padding: 0.8rem 2.5rem;
+            border: none;
+            border-radius: 60px;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 6px 0 #b3b3b3;
+            position: absolute;
+        }
+
+        #yesBtn {
+            background-color: #ffa5c3;
+            color: white;
+            left: 10%;
+            box-shadow: 0 6px 0 #ff6f9e;
+        }
+        #yesBtn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 0 #ff6f9e;
+        }
+
+        #noBtn {
+            background-color: #e0e0e0;
+            color: #666;
+            left: 60%;
+            box-shadow: 0 6px 0 #b0b0b0;
+            transition: left 0.1s ease, top 0.1s ease;
+        }
+
+        /* Mensaje final */
+        .message {
+            background-color: #fff0f5;
+            border-radius: 40px;
+            padding: 2rem;
+            margin-top: 2rem;
+            border: 3px dashed #ffa5c3;
+            font-size: 1.3rem;
+            color: #5e5e5e;
+            line-height: 1.6;
+            text-align: left;
+        }
+        .message p {
+            margin-bottom: 1rem;
+        }
+        .message .heart {
+            color: #ff4d6d;
+            font-size: 2rem;
+            text-align: center;
+        }
+
+        footer {
+            margin-top: 2rem;
+            font-size: 0.9rem;
+            color: #ff80a5;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card" id="card">
+            <!-- ESTADO CERRADO: sobre -->
+            <div id="closed" class="closed">
+                <div class="envelope">💌</div>
+                <p>Para Mar</p>
+                <small>haz clic para abrir</small>
+            </div>
+
+            <!-- ESTADO ABIERTO (oculto inicialmente) -->
+            <div id="opened" class="opened hidden">
+                <!-- Personajes CSS -->
+                <div class="characters">
+                    <div class="character miffy">
+                        <div class="eyes"></div>
+                        <div class="mouth"></div>
+                    </div>
+                    <div class="character hello-kitty">
+                        <div class="bow"></div>
+                        <div class="eyes"></div>
+                        <div class="nose"></div>
+                        <div class="whiskers"></div>
+                    </div>
+                    <div class="character pusheen">
+                        <div class="eyes"></div>
+                        <div class="cheeks"></div>
+                    </div>
+                </div>
+
+                <h2>Mar, ¿quieres ser mi San Valentín?</h2>
+
+                <div class="buttons">
+                    <button class="btn" id="yesBtn">Sí</button>
+                    <button class="btn" id="noBtn">No</button>
+                </div>
+
+                <!-- Mensaje que aparece al decir SÍ (oculto al principio) -->
+                <div id="message" class="message hidden">
+                    <!-- ====== EDITAR ESTE MENSAJE CON TUS PALABRAS ====== -->
+                    <p>Mar, mi niña bonita,</p>
+                    <p>Desde que llegaste a mi vida todo tiene más color. Eres mi persona favorita, mi alegría, mi paz. Cada momento a tu lado es especial y quiero que este San Valentín sea el primero de muchísimos que pasemos juntos.</p>
+                    <p>Te amo con todo mi corazón, gracias por existir. 💖</p>
+                    <p class="heart">Siempre tuyo, [Tu nombre]</p>
+                    <!-- ================================================= -->
+                </div>
+            </div>
+        </div>
+        <footer>con todo mi amor, para Mar ❤️</footer>
+    </div>
+
+    <script>
+        // Elementos
+        const closedDiv = document.getElementById('closed');
+        const openedDiv = document.getElementById('opened');
+        const yesBtn = document.getElementById('yesBtn');
+        const noBtn = document.getElementById('noBtn');
+        const messageDiv = document.getElementById('message');
+        const buttonsContainer = document.querySelector('.buttons');
+
+        // Abrir la carta al hacer clic en el sobre
+        closedDiv.addEventListener('click', () => {
+            closedDiv.classList.add('hidden');
+            openedDiv.classList.remove('hidden');
+        });
+
+        // Acción del botón SÍ
+        yesBtn.addEventListener('click', () => {
+            // Ocultar los botones
+            yesBtn.style.display = 'none';
+            noBtn.style.display = 'none';
+            // Mostrar el mensaje bonito
+            messageDiv.classList.remove('hidden');
+        });
+
+        // --- Botón NO móvil (se escapa del cursor) ---
+        // Lo hacemos con posición absoluta y lo movemos aleatoriamente dentro del contenedor
+        // Primero aseguramos que el botón NO sea position absolute desde CSS ya lo tiene
+        // Guardamos dimensiones
+        function moveNoButton() {
+            const containerRect = buttonsContainer.getBoundingClientRect();
+            const btnRect = noBtn.getBoundingClientRect();
+
+            // Calcular límites (para que no se salga del contenedor)
+            const maxLeft = containerRect.width - btnRect.width;
+            const maxTop = containerRect.height - btnRect.height;
+
+            // Generar posiciones aleatorias
+            let newLeft = Math.random() * maxLeft;
+            let newTop = Math.random() * maxTop;
+
+            // Asegurar valores positivos
+            newLeft = Math.max(0, Math.min(newLeft, maxLeft));
+            newTop = Math.max(0, Math.min(newTop, maxTop));
+
+            // Aplicar nuevas coordenadas (en píxeles relativas al contenedor)
+            noBtn.style.left = newLeft + 'px';
+            noBtn.style.top = newTop + 'px';
+        }
+
+        // Mover el botón cada vez que el mouse entra en él (se "escapa")
+        noBtn.addEventListener('mouseenter', moveNoButton);
+
+        // Por si de milagro logran hacer clic en NO (redirigimos a SÍ con un mensaje juguetón)
+        noBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            // En lugar de dejar que haga clic, mostramos el mensaje de SÍ (por si acaso)
+            // Ocultamos botones y mostramos mensaje
+            yesBtn.style.display = 'none';
+            noBtn.style.display = 'none';
+            messageDiv.classList.remove('hidden');
+            // Podemos añadir un detalle extra
+            alert('¡Sabía que querías decir SÍ! 😉');
+        });
+
+        // Ajustar posición inicial del NO (al abrir o al redimensionar)
+        window.addEventListener('resize', () => {
+            // Reubicar el NO en una posición aleatoria para que no se quede fuera al cambiar tamaño
+            moveNoButton();
+        });
+
+        // Posición aleatoria también al cargar (por si acaso)
+        window.addEventListener('load', () => {
+            // Pero solo si está visible (el opened aún no está visible, pero da igual)
+            // Al abrirse la carta, el botón ya tendrá una posición aleatoria con el mouseenter
+            // Podemos forzar un movimiento inicial cuando se abra la carta
+        });
+
+        // Para que al abrir la carta el botón NO tenga una posición inicial aleatoria
+        closedDiv.addEventListener('click', () => {
+            // Pequeño timeout para asegurar que el contenedor ya es visible
+            setTimeout(() => {
+                moveNoButton();
+            }, 50);
+        });
+    </script>
+</body>
+  </html>
